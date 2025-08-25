@@ -1,6 +1,7 @@
 from backend.forecasting_service import EnergyForecaster
 import glob
 import os
+import sys
 import pandas as pd
 
 MODEL_PATH = 'backend/prophet_model_ALL.joblib'
@@ -8,8 +9,9 @@ CUSTOMER_ID = None  # Set to None to use all customers, or specify one
 
 def main():
 	forecaster = EnergyForecaster()
-	# Find all CSV files in backend/
-	csv_files = glob.glob(os.path.join('backend', '*.csv'))
+	# Find all CSV files in the parent ecotrack-ai directory
+	parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	csv_files = glob.glob(os.path.join(parent_dir, '*.csv'))
 	all_dfs = []
 	for csv_path in csv_files:
 		try:

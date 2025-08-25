@@ -4,6 +4,22 @@ import numpy as np
 import pandas as pd
 
 class AnomalyDetector:
+	def train_and_save_iforest(self, df, model_path):
+		"""
+		Train Isolation Forest on the provided DataFrame and save the model.
+		"""
+		features = self.extract_features(df)
+		self.isolation_forest.fit(features)
+		import joblib
+		joblib.dump(self.isolation_forest, model_path)
+	def load_kplc_csv(self, file_path, customer_id=None):
+		"""
+		Load KPLC CSV file and optionally filter by customer_id.
+		"""
+		df = pd.read_csv(file_path)
+		if customer_id is not None and 'CustomerID' in df.columns:
+			df = df[df['CustomerID'] == customer_id]
+		return df
 	def __init__(self, contamination=0.1, random_state=42):
 		self.isolation_forest = IsolationForest(
 			contamination=contamination,
