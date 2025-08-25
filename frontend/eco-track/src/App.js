@@ -1,9 +1,9 @@
 import './App.css';
-
+import EcoTracker from "./pages/EcoTracker";
 function App() {
   return (
     <div className="App">
-      <h1>Welcome to EcoTrack!</h1>
+     <EcoTracker />
     </div>
   );
 }
