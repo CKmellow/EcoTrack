@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import backgroundImg from "../assets/backgroundimg2.jpg";
 function EcoTracker() {
+  const navigate = useNavigate();
   return (
     <div className="w-full min-h-screen flex flex-col">
 
@@ -25,8 +27,9 @@ function EcoTracker() {
     <nav className="flex items-center space-x-6 text-gray-200 font-medium backdrop-blur-sm">
       <a href="#" className="hover:text-[#144D52]">Dashboard</a>
       <a href="#" className="hover:text-[#144D52]">Analytics</a>
-      <button className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
+      <button  onClick={() => navigate("/signup")} className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
         Get Started
+         
       </button>
     </nav>
   </div>
@@ -45,7 +48,7 @@ function EcoTracker() {
     </p>
 
     <div className="flex justify-center space-x-4 mt-20">
-      <button className="bg-gradient-to-r from-green-600 to-teal-400 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform">
+      <button onClick={() => navigate("/signup")} className="bg-gradient-to-r from-green-600 to-teal-400 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform">
         Start Monitoring →
       </button>
       <button className="bg-white border border-gray-300 text-[#144D52] px-6 py-3 rounded-lg hover:bg-gray-100">
