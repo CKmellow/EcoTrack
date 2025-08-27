@@ -1,13 +1,26 @@
 from fastapi import FastAPI
+from routes import auth_routes
+from fastapi.middleware.cors import CORSMiddleware
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="EcoTrack Backend",
-    description="API backend for EcoTrack System",
-    version="1.0.0"
+app = FastAPI(title="EcoTrack Backend")
+
+# Allow frontend
+origins = [
+    "http://localhost:3000",  
+    "http://127.0.0.1:3000",  
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            
+    allow_credentials=True,
+    allow_methods=["*"],             
+    allow_headers=["*"],              
 )
 
-# Test root endpoint
+# Routers
+app.include_router(auth_routes.router, prefix="/api/auth", tags=["Auth"])
+
 @app.get("/")
-def read_root():
+def root():
     return {"message": "Welcome to EcoTrack API 🚀"}
