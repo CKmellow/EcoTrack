@@ -1,0 +1,9 @@
+#run server with
+uvicorn main:app --reload
+
+#Dependencies
+fastapi
+uvicorn
+python-dotenv
+motor
+pip install passlib[bcrypt] python-jose[cryptography] email-validator python-dotenv
