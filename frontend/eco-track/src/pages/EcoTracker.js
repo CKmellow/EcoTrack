@@ -1,4 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
 import { useNavigate } from "react-router-dom";
 import backgroundImg from "../assets/backgroundimg2.jpg";
 import PerformanceInsights from "../Components/PerformanceInsights";
@@ -28,11 +31,10 @@ function EcoTracker() {
 
     {/* Nav */}
     <nav className="flex items-center space-x-6 text-gray-200 font-medium backdrop-blur-sm">
-      <a href="/admin-dashboard" className="hover:text-[#144D52]">Dashboard</a>
-      <a href="#" className="hover:text-[#144D52]">Analytics</a>
+      <Link to="/admin-dashboard" className="hover:text-[#144D52]">Dashboard</Link>
+      <Link to="/analytics" className="hover:text-[#144D52]">Analytics</Link>
       <button  onClick={() => navigate("/signup")} className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
         Get Started
-         
       </button>
     </nav>
   </div>
@@ -99,17 +101,70 @@ function EcoTracker() {
       <StatCards/>
 
       {/* Trends Chart Section */}
-      <div className="bg-white shadow-sm border border-gray-200 rounded-xl p-8 mb-10">
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '16px',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        padding: '2rem',
+        marginBottom: '2.5rem',
+      }}>
         <h3 className="text-lg font-semibold text-[#144D52] mb-2">
           Energy Consumption Trends
         </h3>
         <p className="text-sm text-gray-500 mb-6">
           24-hour energy usage patterns and efficiency metrics
         </p>
-        <div className="flex justify-center items-center h-48 text-gray-400">
-       
-          <p className="ml-2">Interactive energy chart visualization</p>
-        </div>
+        <Line
+          data={{
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [
+              {
+                label: 'Energy Consumption',
+                data: [60, 80, 75, 110, 90, 130, 100],
+                fill: true,
+                backgroundColor: function(context) {
+                  const chart = context.chart;
+                  const {ctx, chartArea} = chart;
+                  if (!chartArea) return null;
+                  const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                  gradient.addColorStop(0, 'rgba(0, 200, 83, 0.4)'); // Green
+                  gradient.addColorStop(1, 'rgba(0, 200, 83, 0)');
+                  return gradient;
+                },
+                borderColor: '#00C853', // Green
+                tension: 0.4, // Smooth curve
+                pointRadius: 0,
+                borderWidth: 3,
+                pointBackgroundColor: '#00C853',
+                pointBorderColor: '#fff',
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: '#00C853',
+                pointHoverBorderColor: '#fff',
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              title: { display: false },
+            },
+            scales: {
+              y: {
+                min: 40,
+                max: 140,
+                grid: { color: 'rgba(0,0,0,0.05)' },
+                ticks: { color: '#333' },
+              },
+              x: {
+                grid: { color: 'rgba(0,0,0,0.05)', drawOnChartArea: true },
+                ticks: { color: '#333' },
+              },
+            },
+          }}
+        />
       </div>
 
       {/* Tips & Insights */}

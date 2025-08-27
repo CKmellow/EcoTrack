@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../Components/Header";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function Login() {
   const [form, setForm] = useState({
     email: "",
@@ -8,6 +11,8 @@ export default function Login() {
     role: "Company Admin",
     remember: false,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,40 +23,33 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: form.email,
-        password: form.password,
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json();
-      alert(err.detail || "Login failed");
-      return;
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+      setLoading(false);
+      if (!response.ok) {
+        const err = await response.json();
+        toast.error(err.detail || "Login failed", { position: "top-center" });
+        return;
+      }
+      const data = await response.json();
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("userEmail", form.email);
+      toast.success("🚀 Login successful!", { position: "top-center" });
+      setTimeout(() => window.location.href = "/bills", 1500);
+    } catch (error) {
+      setLoading(false);
+      toast.error("Something went wrong", { position: "top-center" });
     }
-
-    const data = await response.json();
-
-    // store token in localStorage
-    localStorage.setItem("token", data.access_token);
-    localStorage.setItem("userEmail", form.email);
-
-    alert("Login successful 🚀");
-    console.log("Token saved:", data.access_token);
-
-    // Redirect to dashboard (or any protected page)
-    window.location.href = "/dashboard";
-  } catch (error) {
-    console.error("Error logging in:", error);
-    alert("Something went wrong");
-  }
-};
-
+  };
 
   return (
     <div className="flex h-screen">
@@ -84,16 +82,25 @@ export default function Login() {
               required
             />
 
-            {/* Password */}
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-              required
-            />
+            {/* Password with toggle icon */}
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 pr-10"
+                required
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-green-600 text-xl"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
 
             {/* Role */}
             <select
@@ -140,6 +147,16 @@ export default function Login() {
           </p>
         </div>
       </div>
+
+      <ToastContainer />
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+          <div className="bg-white rounded-full p-4 shadow-lg flex items-center gap-2">
+            <span className="animate-spin h-6 w-6 border-4 border-green-400 border-t-transparent rounded-full inline-block"></span>
+            <span className="text-green-700 font-semibold">Logging in...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,10 @@ import EcoTracker from "./pages/EcoTracker";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import CompanyAdminDashboard from "./pages/CompanyAdminDashboard";
+import BillManagement from './pages/BillManagement';
+
+// ...inside your <Routes> component:
+<Route path="/bills" element={<BillManagement />} />
 function App() {
   return (
     <Routes>
@@ -11,6 +15,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin-dashboard" element={<CompanyAdminDashboard />} />
+      <Route path="/bills" element={<BillManagement />} />  
     </Routes>
   );
 }
