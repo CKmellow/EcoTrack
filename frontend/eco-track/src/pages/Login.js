@@ -17,11 +17,41 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login data:", form);
-    // TODO: integrate with backend auth API
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.detail || "Login failed");
+      return;
+    }
+
+    const data = await response.json();
+
+    // store token in localStorage
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("userEmail", form.email);
+
+    alert("Login successful 🚀");
+    console.log("Token saved:", data.access_token);
+
+    // Redirect to dashboard (or any protected page)
+    window.location.href = "/dashboard";
+  } catch (error) {
+    console.error("Error logging in:", error);
+    alert("Something went wrong");
+  }
+};
+
 
   return (
     <div className="flex h-screen">
