@@ -3,7 +3,13 @@ uvicorn main:app --reload
 
 #Dependencies
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv
 motor
-pip install passlib[bcrypt] python-jose[cryptography] email-validator python-dotenv
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
+pydantic
+pydantic[email]    # for email validation via pydantic
+python-multipart   # for handling forms / file uploads if needed
+

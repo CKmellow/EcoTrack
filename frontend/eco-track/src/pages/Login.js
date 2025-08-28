@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,7 +8,6 @@ export default function Login() {
   const [form, setForm] = useState({
     email: "",
     password: "",
-    role: "Company Admin",
     remember: false,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -26,28 +25,29 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      const payload = {
+        email: form.email,
+        password: form.password,
+      };
       const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
+        body: JSON.stringify(payload),
       });
       setLoading(false);
       if (!response.ok) {
         const err = await response.json();
-        toast.error(err.detail || "Login failed", { position: "top-center" });
+        toast.error(err.detail || "Login failed", { position: "top-right" });
         return;
       }
       const data = await response.json();
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("userEmail", form.email);
-      toast.success("🚀 Login successful!", { position: "top-center" });
+      toast.success("🚀 Login successful!", { position: "top-right" });
       setTimeout(() => window.location.href = "/bills", 1500);
     } catch (error) {
       setLoading(false);
-      toast.error("Something went wrong", { position: "top-center" });
+      toast.error("Something went wrong", { position: "top-right" });
     }
   };
 
@@ -102,16 +102,7 @@ export default function Login() {
               </span>
             </div>
 
-            {/* Role */}
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-            >
-              <option>Company Admin</option>
-              <option>Department Admin</option>
-            </select>
+            {/* ...existing code... */}
 
             {/* Remember Me + Reset */}
             <div className="flex items-center justify-between text-sm text-white">
@@ -148,7 +139,18 @@ export default function Login() {
         </div>
       </div>
 
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        toastStyle={{ fontSize: "0.95rem", minHeight: "40px", padding: "8px 16px" }}
+      />
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
           <div className="bg-white rounded-full p-4 shadow-lg flex items-center gap-2">

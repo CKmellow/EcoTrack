@@ -8,10 +8,6 @@ from fastapi import Depends, HTTPException
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWT settings
-SECRET_KEY = "supersecret"  # ⚠️ move to .env
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # Security scheme
 security = HTTPBearer()
@@ -31,8 +27,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 # ----- DB operations -----
 async def create_user(user_data: dict):
     user_data["password"] = hash_password(user_data["password"])
+    user_data.setdefault("is_active", True)
     result = await db["users"].insert_one(user_data)
     return str(result.inserted_id)
+
 
 async def find_user_by_email(email: str):
     return await db["users"].find_one({"email": email})

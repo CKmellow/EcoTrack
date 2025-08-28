@@ -3,6 +3,7 @@ from routes import auth_routes, CoAdmin_routes
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from routes import department_routes
 
 
 app = FastAPI(title="EcoTrack Backend")
@@ -26,6 +27,7 @@ security = HTTPBearer()
 # Routers
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(CoAdmin_routes.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(department_routes.router, prefix="/api/departments", tags=["Departments"])
 
 @app.get("/protected")
 async def protected_route(credentials: HTTPAuthorizationCredentials = Depends(security)):

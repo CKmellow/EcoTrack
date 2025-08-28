@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -6,10 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
   const [form, setForm] = useState({
-    companyName: "",
+    name: "",
     email: "",
     password: "",
-    role: "Company Admin",
+    phone: "",
+    department_id: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -22,20 +23,29 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        email: form.email,
+        password: form.password,
+        role: "company_admin", // always company admin
+        name: form.name,
+        phone: form.phone,
+        department_id: "", // always empty
+        is_active: true
+      };
       const res = await fetch("http://localhost:8000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
-        toast.success("🎉 Account created successfully!", { position: "top-center" });
+        toast.success("🎉 Account created successfully!", { position: "top-right" });
         setTimeout(() => navigate("/bills"), 2000);
       } else {
         const error = await res.json();
-        toast.error("Signup failed: " + (error.detail || "Unknown error"), { position: "top-center" });
+        toast.error("Signup failed: " + (error.detail || "Unknown error"), { position: "top-right" });
       }
     } catch (err) {
-      toast.error("Network error: " + err.message, { position: "top-center" });
+      toast.error("Network error: " + err.message, { position: "top-right" });
     }
   };
 
@@ -59,13 +69,13 @@ export default function Signup() {
           </h2>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Company Name */}
+            {/* Name */}
             <input
               type="text"
-              name="companyName"
-              value={form.companyName}
+              name="name"
+              value={form.name}
               onChange={handleChange}
-              placeholder="Company Name"
+              placeholder="Full Name"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
               required
             />
@@ -79,6 +89,16 @@ export default function Signup() {
               placeholder="Email address"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
               required
+            />
+
+            {/* Phone (optional) */}
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="Phone (optional)"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
             />
 
             {/* Password with toggle icon */}
@@ -101,17 +121,6 @@ export default function Signup() {
               </span>
             </div>
 
-            {/* Role */}
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-            >
-              <option>Company Admin</option>
-              <option>Department Admin</option>
-            </select>
-
             {/* Submit */}
             <button
               type="submit"
@@ -129,7 +138,18 @@ export default function Signup() {
           </p>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        toastStyle={{ fontSize: "0.95rem", minHeight: "40px", padding: "8px 16px" }}
+      />
     </div>
   );
 }

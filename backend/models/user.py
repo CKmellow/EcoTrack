@@ -1,10 +1,14 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 class UserSignup(BaseModel):
-    companyName: str
     email: EmailStr
     password: str
-    role: str
+    role: str   # "company_admin" | "dept_admin"
+    name: str
+    phone: Optional[str] = None
+    department_id: Optional[str] = None
+    is_active: bool = True
 
 class UserLogin(BaseModel):
     email: EmailStr

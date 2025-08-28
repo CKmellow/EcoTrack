@@ -68,7 +68,7 @@ async def delete_user(user_id: str, current_user=Depends(require_admin)):
 @router.get("/company/department-admins")
 async def get_department_admins(current_user=Depends(require_admin)):
     cursor = db["users"].find(
-        {"companyName": current_user["companyName"], "role": "Department Admin"},
+        {"role": "dept_admin", "companyName": current_user["companyName"]},
         {"password": 0}
     )
     admins = []
@@ -76,3 +76,4 @@ async def get_department_admins(current_user=Depends(require_admin)):
         admin["_id"] = str(admin["_id"])
         admins.append(admin)
     return admins
+
