@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import Header from "../Components/Header";
 
 const glassStyle = {
   background: "rgba(255,255,255,0.2)",
@@ -158,7 +159,10 @@ function BillManagement() {
   };
 
   return (
+     <div className="w-full min-h-screen bg-[#F5F8F2] flex flex-col"> 
+     <Header />
     <div className="min-h-screen w-full flex flex-col items-center justify-start bg-[#F5F8F2] py-10 px-4">
+     
       <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-400 mb-8">Bill Management</h2>
       <div style={glassStyle} className="w-full max-w-2xl mb-8">
         <h3 className="text-xl font-semibold mb-4 text-[#144D52]">Upload Bills</h3>
@@ -276,6 +280,7 @@ function BillManagement() {
           {status}
         </div>
       )}
+    </div>
     </div>
   );
 }

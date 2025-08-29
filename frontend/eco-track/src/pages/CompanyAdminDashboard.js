@@ -2,11 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import AnalyticsDashboard from "../Components/CompanyAnalytics";
 function CompanyAdminDashboard() {
+    const navigate = useNavigate();
   return (
     <div className="w-full min-h-screen bg-[#F5F8F2] flex flex-col">
-      {/* Header */}
-      <Header />
+     < Header />
 
       {/* Main Content */}
       <main className="flex-1 px-8 py-10">
@@ -51,8 +52,21 @@ function CompanyAdminDashboard() {
               <button className="bg-gradient-to-r from-green-600 to-teal-400 text-white px-6 py-3 rounded-lg shadow hover:scale-105 transition-transform">Add Department</button>
               <button className="bg-white border border-gray-300 text-[#144D52] px-6 py-3 rounded-lg hover:bg-gray-100">Generate Report</button>
               <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-[#1e8c6b]">Send Alert</button>
+              <button onClick={() => navigate("/bills")}  className="bg-gradient-to-r from-green-600 to-teal-400 text-white px-6 py-3 rounded-lg shadow hover:scale-105 transition-transform ">Bill Management</button>
+
+
             </div>
           </div>
+       
+   
+       
+       
+        </div>
+
+          <div className="bg-white border border-gray-200 rounded-xl p-6 mt-10 shadow">
+          <h4 className="text-lg font-semibold text-[#144D52] mb-6">Analytics Overview</h4>
+          <AnalyticsDashboard />
+         
         </div>
       </main>
       <Footer />

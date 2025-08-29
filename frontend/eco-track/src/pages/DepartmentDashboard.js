@@ -57,13 +57,16 @@ export default function DepartmentDashboard() {
   return (
     <div className="min-h-screen bg-green-50">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-green-600 to-teal-400 text-white flex justify-between items-center px-6 py-4 shadow-lg z-50">
-        <h1 className="text-xl font-bold">Department Dashboard</h1>
+      <nav className="fixed top-0 left-0 w-full bg-black text-white flex justify-between items-center px-6 py-4 shadow-lg z-50">
+         <div className="flex items-center space-x-3">
+         <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded" />
+          <span className="text-white font-semibold text-lg">EcoTrack</span>
+          </div>
         <div className="space-x-6">
-          <a href="#metrics" className="text-black">Metrics</a>
-          <a href="#inventory" className="text-black">Inventory</a>
-          <a href="#goals" className="text-black">Goals</a>
-          <a href="#comparison" className="text-black">Comparison</a>
+          <a href="#metrics" className="text-white">Metrics</a>
+          <a href="#inventory" className="text-white">Inventory</a>
+          <a href="#goals" className="text-white">Goals</a>
+          <a href="#comparison" className="text-white">Comparison</a>
         </div>
       </nav>
       <div className="p-6 mb-2">

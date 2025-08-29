@@ -35,7 +35,7 @@ function EcoTracker() {
     {/* Nav */}
     <nav className="flex items-center space-x-6 text-gray-200 font-medium backdrop-blur-sm">
       <Link to="/admin-dashboard" className="hover:text-[#144D52]">Dashboard</Link>
-      <Link to="/companalytics" className="hover:text-[#144D52]">Analytics</Link>
+      <Link to="admin-dashboard" className="hover:text-[#144D52]">Analytics</Link>
       <button  onClick={() => navigate("/signup")} className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
         Get Started
       </button>
