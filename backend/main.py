@@ -1,26 +1,16 @@
-from fastapi import FastAPI
-from routes import auth_routes, CoAdmin_routes
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from routes import department_routes
 
+# Routers
+from routes import auth_routes, CoAdmin_routes, department_routes, ai_routes
+
+# Middleware
+from middleware.cors import setup_cors
 
 app = FastAPI(title="EcoTrack Backend")
 
-# Allow frontend
-origins = [
-    "http://localhost:3000",  
-    "http://127.0.0.1:3000",  
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,            
-    allow_credentials=True,
-    allow_methods=["*"],             
-    allow_headers=["*"],              
-)
+# Apply CORS
+setup_cors(app)
 
 security = HTTPBearer()
 
@@ -28,11 +18,11 @@ security = HTTPBearer()
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(CoAdmin_routes.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(department_routes.router, prefix="/api/departments", tags=["Departments"])
+app.include_router(ai_routes.router)
 
 @app.get("/protected")
 async def protected_route(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    # 🔑 Here you’d normally call your JWT verification
     return {"message": "Access granted", "token": token}
 
 @app.get("/")

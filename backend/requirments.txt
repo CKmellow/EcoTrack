@@ -12,4 +12,6 @@ email-validator
 pydantic
 pydantic[email]    # for email validation via pydantic
 python-multipart   # for handling forms / file uploads if needed
+openai
+
 
