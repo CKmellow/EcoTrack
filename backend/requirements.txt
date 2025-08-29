@@ -6,3 +6,4 @@ passlib[bcrypt]
 python-jose[cryptography]
 pydantic[email]      # includes pydantic + email-validator
 python-multipart     # needed for form/file uploads
+openai
