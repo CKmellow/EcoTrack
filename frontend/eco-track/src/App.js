@@ -4,7 +4,7 @@ import EcoTracker from "./pages/EcoTracker";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import DepartmentDashboard from './pages/DepartmentDashboard';
-import AnalyticsPage from "./pages/companalytics";
+
 
 import CompanyAdminDashboard from "./pages/CompanyAdminDashboard";
 import BillManagement from './pages/BillManagement';
@@ -20,7 +20,7 @@ function App() {
       <Route path="/admin-dashboard" element={<CompanyAdminDashboard />} />
       <Route path="/bills" element={<BillManagement />} />  
       <Route path="/department-dashboard" element={<DepartmentDashboard />} />
-       <Route path="/companalytics" element={<AnalyticsPage />} />
+      
     </Routes>
   );
 }
