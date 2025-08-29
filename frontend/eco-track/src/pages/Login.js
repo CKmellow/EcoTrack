@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";   // ✅ useNavigate for redirects
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -12,6 +12,8 @@ export default function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();  // ✅ hook for navigation
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -40,11 +42,27 @@ export default function Login() {
         toast.error(err.detail || "Login failed", { position: "top-right" });
         return;
       }
+
       const data = await response.json();
+
+      // ✅ Save token + role
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("userEmail", form.email);
+      localStorage.setItem("role", data.role);
+
       toast.success("🚀 Login successful!", { position: "top-right" });
-      setTimeout(() => window.location.href = "/bills", 1500);
+
+      // ✅ Redirect by role
+      setTimeout(() => {
+        if (data.role === "company_admin") {
+          navigate("/admin-dashboard");
+        } else if (data.role === "department_admin") {
+          navigate("/department-dashboard");
+        } else {
+          navigate("/"); // fallback
+        }
+      }, 1500);
+
     } catch (error) {
       setLoading(false);
       toast.error("Something went wrong", { position: "top-right" });
@@ -102,8 +120,6 @@ export default function Login() {
               </span>
             </div>
 
-            {/* ...existing code... */}
-
             {/* Remember Me + Reset */}
             <div className="flex items-center justify-between text-sm text-white">
               <label className="flex items-center gap-2">
@@ -124,9 +140,9 @@ export default function Login() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-teal-400 text-white py-2 rounded-lg  hover:from-green-600 hover:to-teal-800 "
+              className="w-full bg-gradient-to-r from-green-600 to-teal-400 text-white py-2 rounded-lg hover:from-green-600 hover:to-teal-800"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
@@ -151,14 +167,6 @@ export default function Login() {
         pauseOnHover
         toastStyle={{ fontSize: "0.95rem", minHeight: "40px", padding: "8px 16px" }}
       />
-      {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-          <div className="bg-white rounded-full p-4 shadow-lg flex items-center gap-2">
-            <span className="animate-spin h-6 w-6 border-4 border-green-400 border-t-transparent rounded-full inline-block"></span>
-            <span className="text-green-700 font-semibold">Logging in...</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

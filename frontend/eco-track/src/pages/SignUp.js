@@ -1,58 +1,100 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Signup() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    password: "",
     phone: "",
-    department_id: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const payload = {
-        email: form.email,
-        password: form.password,
-        role: "company_admin", // always company admin
         name: form.name,
+        email: form.email,
         phone: form.phone,
-        department_id: "", // always empty
-        is_active: true
+        password: form.password,
+        role: "company_admin", // signup always creates company admin
+        department_id: "",
+        is_active: true,
       };
-      const res = await fetch("http://localhost:8000/api/auth/signup", {
+
+      const signupRes = await fetch("http://127.0.0.1:8000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
-        toast.success("🎉 Account created successfully!", { position: "top-right" });
-        setTimeout(() => navigate("/bills"), 2000);
-      } else {
-        const error = await res.json();
-        toast.error("Signup failed: " + (error.detail || "Unknown error"), { position: "top-right" });
+
+      if (!signupRes.ok) {
+        const err = await signupRes.json();
+        toast.error(err.detail || "Signup failed", { position: "top-right" });
+        setLoading(false);
+        return;
       }
+
+      // ✅ Signup successful → login immediately
+      const loginRes = await fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+
+      setLoading(false);
+
+      if (!loginRes.ok) {
+        toast.error("Signup succeeded but login failed", { position: "top-right" });
+        return;
+      }
+
+      const data = await loginRes.json();
+      // Save token + role
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("userEmail", form.email);
+      localStorage.setItem("role", data.role);
+
+      toast.success("🎉 Account created & logged in!", { position: "top-right" });
+
+      // ✅ Redirect by role
+      setTimeout(() => {
+        if (data.role === "company_admin") {
+          navigate("/admin-dashboard");
+        } else if (data.role === "department_user") {
+          navigate("/department-dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 1500);
+
     } catch (err) {
+      setLoading(false);
       toast.error("Network error: " + err.message, { position: "top-right" });
     }
   };
 
   return (
     <div className="flex h-screen">
-      {/* Left Side - Image */}
-      <div className="hidden md:flex w-1/2 h-screen">
+      {/* Left Side */}
+      <div className="hidden md:flex w-1/2 relative">
         <img
           src="/formbg.jpg"
           alt="EcoTrack Illustration"
@@ -61,10 +103,10 @@ export default function Signup() {
         <div className="absolute inset-0 bg-black opacity-20"></div>
       </div>
 
-      {/* Right Side - Form */}
-      <div className="flex w-full md:w-1/2 items-center justify-center bg-gradient-to-r from-green-600 to-green-400 p-6">
+      {/* Right Side */}
+      <div className="flex w-full md:w-1/2 items-center justify-center bg-gradient-to-r from-green-800 to-green-400 p-6">
         <div className="w-full max-w-md bg-white/40 backdrop-blur-lg rounded-2xl shadow-lg p-8 border border-white/30">
-          <h2 className="text-3xl font-bold text-center bg-white mb-4 text-transparent bg-clip-text ">
+          <h2 className="text-3xl font-bold text-center text-white mb-6">
             Create EcoTrack Account
           </h2>
 
@@ -91,17 +133,18 @@ export default function Signup() {
               required
             />
 
-            {/* Phone (optional) */}
+            {/* Phone */}
             <input
-              type="text"
+              type="tel"
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              placeholder="Phone (optional)"
+              placeholder="Phone Number"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+              required
             />
 
-            {/* Password with toggle icon */}
+            {/* Password with toggle */}
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -126,18 +169,19 @@ export default function Signup() {
               type="submit"
               className="w-full bg-gradient-to-r from-green-600 to-teal-400 text-white py-2 rounded-lg hover:from-green-600 hover:to-teal-800"
             >
-              Sign Up
+              {loading ? "Signing up..." : "Sign Up"}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-black">
             Already have an account?{" "}
             <Link to="/login" className="text-green-800 font-medium hover:underline">
-              Login
+              Log in
             </Link>
           </p>
         </div>
       </div>
+
       <ToastContainer
         position="top-right"
         autoClose={3000}

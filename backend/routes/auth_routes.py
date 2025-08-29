@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 from models.user import UserSignup, UserLogin
 from services import auth_service
 
@@ -15,6 +15,7 @@ async def signup(user: UserSignup):
     user_id = await auth_service.create_user(user_dict)
     return {"message": "User created successfully", "user_id": user_id}
 
+
 # Login route
 @router.post("/login")
 async def login(user: UserLogin):
@@ -22,5 +23,9 @@ async def login(user: UserLogin):
     if not db_user or not auth_service.verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = auth_service.create_access_token({"sub": db_user["email"]})
-    return {"access_token": token, "token_type": "bearer"}
+    token = auth_service.create_access_token({"sub": db_user["email"], "role": db_user["role"]})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "role": db_user["role"],   # 👈 send role for frontend redirection
+    }
