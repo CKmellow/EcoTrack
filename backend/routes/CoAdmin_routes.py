@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from bson import ObjectId
 from models.user import UserSignup
+from models.department import Department
 from services import auth_service
 from config.database import db
+import logging
 
 router = APIRouter()
+logger=logging.getLogger(__name__)
 
 # --- Require Admin ---
 async def require_admin(current_user=Depends(auth_service.get_current_user)):
-    if current_user["role"] != "Company Admin":
+    logger.info(f"🔑 Current user role: {current_user.get('role')}")
+    if current_user["role"] != "company_admin":
         raise HTTPException(status_code=403, detail="Admins only")
     return current_user
 
@@ -16,7 +20,6 @@ async def require_admin(current_user=Depends(auth_service.get_current_user)):
 @router.post("/company/add-user")
 async def add_user(new_user: UserSignup, current_user=Depends(require_admin)):
     user_dict = new_user.dict()
-    # enforce same company as admin
     user_dict["companyName"] = current_user["companyName"]
 
     existing = await db["users"].find_one({"email": user_dict["email"]})
@@ -26,12 +29,12 @@ async def add_user(new_user: UserSignup, current_user=Depends(require_admin)):
     user_id = await auth_service.create_user(user_dict)
     return {"message": "User created successfully", "user_id": user_id}
 
-# --- Get single User (for editing / detail view) ---
+# --- Get single User ---
 @router.get("/company/user/{user_id}")
 async def get_user(user_id: str, current_user=Depends(require_admin)):
     user = await db["users"].find_one(
         {"_id": ObjectId(user_id), "companyName": current_user["companyName"]},
-        {"password": 0}  # don’t leak password hash
+        {"password": 0}
     )
     if not user:
         raise HTTPException(status_code=404, detail="User not found or not in your company")
@@ -41,9 +44,7 @@ async def get_user(user_id: str, current_user=Depends(require_admin)):
 # --- Edit User ---
 @router.put("/company/edit-user/{user_id}")
 async def edit_user(user_id: str, update: dict, current_user=Depends(require_admin)):
-    # prevent companyName change
     update.pop("companyName", None)
-
     result = await db["users"].update_one(
         {"_id": ObjectId(user_id), "companyName": current_user["companyName"]},
         {"$set": update}
@@ -77,3 +78,63 @@ async def get_department_admins(current_user=Depends(require_admin)):
         admins.append(admin)
     return admins
 
+
+# -------------------------------
+# 🚀 Department Management
+# -------------------------------
+
+# --- Create Department ---
+@router.post("/company/departments")
+async def create_department(dept: Department, current_user=Depends(require_admin)):
+    dept_dict = dept.dict()
+
+    # 🔹 Remove companyName requirement for now
+    # dept_dict["companyName"] = current_user["companyName"]
+
+    result = await db["departments"].insert_one(dept_dict)
+    return {
+        "message": "Department created successfully",
+        "department_id": str(result.inserted_id)
+    }
+# --- Get all Departments ---
+@router.get("/company/departments")
+async def list_departments(current_user=Depends(require_admin)):
+    cursor = db["departments"].find({"companyName": current_user["companyName"]})
+    departments = []
+    async for dept in cursor:
+        dept["_id"] = str(dept["_id"])
+        departments.append(dept)
+    return departments
+
+# --- Get single Department ---
+@router.get("/company/departments/{dept_id}")
+async def get_department(dept_id: str, current_user=Depends(require_admin)):
+    dept = await db["departments"].find_one(
+        {"_id": ObjectId(dept_id), "companyName": current_user["companyName"]}
+    )
+    if not dept:
+        raise HTTPException(status_code=404, detail="Department not found or not in your company")
+    dept["_id"] = str(dept["_id"])
+    return dept
+
+# --- Update Department ---
+@router.put("/company/departments/{dept_id}")
+async def update_department(dept_id: str, update: dict, current_user=Depends(require_admin)):
+    update.pop("companyName", None)
+    result = await db["departments"].update_one(
+        {"_id": ObjectId(dept_id), "companyName": current_user["companyName"]},
+        {"$set": update}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Department not found or not in your company")
+    return {"message": "Department updated successfully"}
+
+# --- Delete Department ---
+@router.delete("/company/departments/{dept_id}")
+async def delete_department(dept_id: str, current_user=Depends(require_admin)):
+    result = await db["departments"].delete_one(
+        {"_id": ObjectId(dept_id), "companyName": current_user["companyName"]}
+    )
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Department not found or not in your company")
+    return {"message": "Department deleted successfully"}

@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 from config.database import db, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -53,6 +56,11 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         user = await db["users"].find_one({"email": email})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
+
+        # 👇 Quick debug print
+        print(f"🔑 Current user: {user.get('email')} | Role: {user.get('role')}")
+
         return user
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
