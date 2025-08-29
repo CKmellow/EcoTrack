@@ -2,10 +2,10 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="w-full bg-black text-white py-6 mt-16">
+    <footer className="w-full bg-black text-white py-10 mt-16">
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         <div className="flex items-center space-x-2 mb-4 md:mb-0">
-          <img src="/logo.png" alt="EcoTrack Logo" className="w-8 h-8" />
+          <img src="/logo.png" alt="EcoTrack Logo" className="w-10 h-10" />
           <span className="font-semibold text-lg">EcoTrack</span>
         </div>
         <div className="text-sm text-gray-400">© {new Date().getFullYear()} EcoTrack. All rights reserved.</div>

@@ -9,7 +9,7 @@ export default function DepartmentMetrics() {
     {
       title: "Consumption vs Target",
       value: "72%",
-      link: "/department/dashboard/consumption",
+      link: "/companalytics",
       icon: Gauge,
       color: "text-[#24A47F]",
       description: "72% of the energy target achieved",
