@@ -56,8 +56,45 @@ const processBill = async (file, setStatus, setResults) => {
     // Example: fetch results from backend after upload
     const res = await fetch(`/api/bills/process/${uploadResponse.fileId}`);
     const data = await res.json();
-    setResults(data); // Save results to state
-    setStatus('Bill processed and results received!');
+
+    // Assume data contains consumption_data: [{timestamp, consumption}]
+    const consumptionData = data.consumption_data || [];
+    const token = localStorage.getItem("token");
+    // Call all AI endpoints
+    const [anomalyRes, carbonRes, forecastRes] = await Promise.all([
+      fetch("http://127.0.0.1:8000/api/ai/anomaly-detect", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ consumption_data: consumptionData })
+      }).then(r => r.json()),
+      fetch("http://127.0.0.1:8000/api/ai/carbon-calc", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ consumption_data: consumptionData })
+      }).then(r => r.json()),
+      fetch("http://127.0.0.1:8000/api/ai/forecast-energy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ consumption_data: consumptionData })
+      }).then(r => r.json())
+    ]);
+
+    setResults({
+      bill: data,
+      anomaly: anomalyRes,
+      carbon: carbonRes,
+      forecast: forecastRes
+    });
+    setStatus('Bill processed and AI results received!');
     return data;
   } catch (err) {
     setStatus('Error processing bill.');
@@ -102,9 +139,48 @@ function BillManagement() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(manualData),
       });
+      let consumptionData = [];
       if (res.ok) {
         setStatus('Manual bill submitted!');
         setManualData({ account: "", amount: "", date: "" });
+        // For manual, build consumptionData from manualData
+        consumptionData = [{
+          timestamp: manualData.date,
+          consumption: manualData.amount
+        }];
+        const token = localStorage.getItem("token");
+        const [anomalyRes, carbonRes, forecastRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/api/ai/anomaly-detect", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ consumption_data: consumptionData })
+          }).then(r => r.json()),
+          fetch("http://127.0.0.1:8000/api/ai/carbon-calc", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ consumption_data: consumptionData })
+          }).then(r => r.json()),
+          fetch("http://127.0.0.1:8000/api/ai/forecast-energy", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ consumption_data: consumptionData })
+          }).then(r => r.json())
+        ]);
+        setResults({
+          bill: manualData,
+          anomaly: anomalyRes,
+          carbon: carbonRes,
+          forecast: forecastRes
+        });
       } else {
         setStatus('Error submitting manual bill.');
       }
@@ -271,7 +347,22 @@ function BillManagement() {
       {results && (
         <div className="mt-6 p-4 bg-white rounded shadow w-full max-w-2xl">
           <h4 className="font-bold text-green-700 mb-2">Bill Analysis Results</h4>
-          <pre className="text-sm text-gray-800 bg-gray-100 p-2 rounded overflow-x-auto">{JSON.stringify(results, null, 2)}</pre>
+          <div className="mb-2">
+            <strong>Bill Data:</strong>
+            <pre className="text-sm text-gray-800 bg-gray-100 p-2 rounded overflow-x-auto">{JSON.stringify(results.bill, null, 2)}</pre>
+          </div>
+          <div className="mb-2">
+            <strong>Carbon Emissions:</strong>
+            <pre className="text-sm text-gray-800 bg-gray-100 p-2 rounded overflow-x-auto">{JSON.stringify(results.carbon, null, 2)}</pre>
+          </div>
+          <div className="mb-2">
+            <strong>Anomaly Detection:</strong>
+            <pre className="text-sm text-gray-800 bg-gray-100 p-2 rounded overflow-x-auto">{JSON.stringify(results.anomaly, null, 2)}</pre>
+          </div>
+          <div className="mb-2">
+            <strong>Energy Forecast:</strong>
+            <pre className="text-sm text-gray-800 bg-gray-100 p-2 rounded overflow-x-auto">{JSON.stringify(results.forecast, null, 2)}</pre>
+          </div>
         </div>
       )}
 

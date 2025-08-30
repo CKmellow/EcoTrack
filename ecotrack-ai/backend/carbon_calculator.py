@@ -2,6 +2,8 @@
 import pandas as pd
 
 class CarbonFootprintCalculator:
+	def calculate_carbon_footprint(self, consumption_data):
+		return {"total_emissions": 0.0, "details": consumption_data}
 	def __init__(self):
 		# Kenya grid factors (example values; adjust when you have official factors)
 		self.emission_factors = {

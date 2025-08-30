@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 # Routers
-from routes import auth_routes, CoAdmin_routes, department_routes, ai_routes
+from backend.routes import auth_routes, CoAdmin_routes, department_routes, ai_routes
 
 # Middleware
 from middleware.cors import setup_cors
