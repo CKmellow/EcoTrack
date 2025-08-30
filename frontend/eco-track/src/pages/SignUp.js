@@ -34,7 +34,7 @@ export default function Signup() {
         email: form.email,
         phone: form.phone,
         password: form.password,
-        role: "company_admin", // signup always creates company admin
+        role: "Company Admin", // signup always creates company admin
         department_id: "",
         is_active: true,
       };
@@ -76,7 +76,7 @@ export default function Signup() {
 
       // ✅ Redirect by role
       setTimeout(() => {
-        if (data.role === "company_admin") {
+        if (data.role === "Company Admin") {
           navigate("/admin-dashboard");
         } else if (data.role === "department_user") {
           navigate("/department-dashboard");

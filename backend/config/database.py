@@ -10,7 +10,13 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
-db = client["Hustle-Base"]  # Use your actual DB name here
+# Use your actual DB name here
+DB_NAME = "Hustle-Base"
 
-# ...existing code...
+# Connect to MongoDB
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
+db = client[DB_NAME]
+
+# Dependency
+async def get_db():
+    return db

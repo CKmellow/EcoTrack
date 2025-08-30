@@ -63,18 +63,18 @@ export default function AddDepartmentAdminModal({ onClose, onSuccess }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ ...form, role: "department_admin" }),
+          body: JSON.stringify({ ...form, role: "Department Admin" }),
         }
       );
 
       if (!res.ok) {
         const err = await res.json();
-        toast.error(err.detail || "Failed to add department admin");
+        toast.error(err.detail || "Failed to add Department Admin");
         setLoading(false);
         return;
       }
 
-      toast.success("Department admin added successfully!");
+      toast.success("Department Admin added successfully!");
       onSuccess();
       onClose();
     } catch (error) {

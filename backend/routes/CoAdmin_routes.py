@@ -12,7 +12,7 @@ logger=logging.getLogger(__name__)
 # --- Require Admin ---
 async def require_admin(current_user=Depends(auth_service.get_current_user)):
     logger.info(f"🔑 Current user role: {current_user.get('role')}")
-    if current_user["role"] != "company_admin":
+    if current_user["role"] != "Company Admin":
         raise HTTPException(status_code=403, detail="Admins only")
     return current_user
 

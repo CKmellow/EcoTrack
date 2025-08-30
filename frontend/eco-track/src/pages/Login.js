@@ -54,9 +54,9 @@ export default function Login() {
 
       // ✅ Redirect by role
       setTimeout(() => {
-        if (data.role === "company_admin") {
+        if (data.role === "Company Admin") {
           navigate("/admin-dashboard");
-        } else if (data.role === "department_admin") {
+        } else if (data.role === "Department Admin") {
           navigate("/department-dashboard");
         } else {
           navigate("/"); // fallback
