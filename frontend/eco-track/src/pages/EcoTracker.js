@@ -34,8 +34,8 @@ function EcoTracker() {
 
     {/* Nav */}
     <nav className="flex items-center space-x-6 text-gray-200 font-medium backdrop-blur-sm">
-      <Link to="/admin-dashboard" className="hover:text-[#144D52]">Dashboard</Link>
-      <Link to="admin-dashboard" className="hover:text-[#144D52]">Analytics</Link>
+      <a href="#dashboard" className="hover:text-[#144D52]">Dashboard</a>
+      <a href="#analytics" className="hover:text-[#144D52]">Analytics</a>
       <button  onClick={() => navigate("/signup")} className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
         Get Started
       </button>
@@ -91,7 +91,7 @@ function EcoTracker() {
         <div className="w-full bg-[#F5F8F2] py-10 px-6">
       {/* Header */}
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-400">
+        <h2 id="dashboard" className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-400">
           Real-Time Energy Dashboard
         </h2>
         <p className="text-gray-600 mt-5 max-w-1xl mx-auto">

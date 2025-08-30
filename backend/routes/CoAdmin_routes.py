@@ -20,15 +20,16 @@ async def require_admin(current_user=Depends(auth_service.get_current_user)):
 @router.post("/company/add-user")
 async def add_user(new_user: UserSignup, current_user=Depends(require_admin)):
     user_dict = new_user.dict()
-    user_dict["companyName"] = current_user["companyName"]
 
+    # Check if email already exists
     existing = await db["users"].find_one({"email": user_dict["email"]})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    # Create new user
     user_id = await auth_service.create_user(user_dict)
-    return {"message": "User created successfully", "user_id": user_id}
 
+    return {"message": "User created successfully", "user_id": str(user_id)}
 # --- Get single User ---
 @router.get("/company/user/{user_id}")
 async def get_user(user_id: str, current_user=Depends(require_admin)):
@@ -97,14 +98,23 @@ async def create_department(dept: Department, current_user=Depends(require_admin
         "department_id": str(result.inserted_id)
     }
 # --- Get all Departments ---
+# --- Get all Departments ---
 @router.get("/company/departments")
 async def list_departments(current_user=Depends(require_admin)):
-    cursor = db["departments"].find({"companyName": current_user["companyName"]})
+    cursor = db["departments"].find({})
     departments = []
     async for dept in cursor:
-        dept["_id"] = str(dept["_id"])
-        departments.append(dept)
-    return departments
+        departments.append({
+            "department_id": str(dept["_id"]),
+            "name": dept.get("name"),            # Replace 'name' with your actual department fields
+            "description": dept.get("description")  # Optional
+            # Add any other fields from your Department model
+        })
+    return {
+        "message": "Departments retrieved successfully",
+        "departments": departments
+    }
+
 
 # --- Get single Department ---
 @router.get("/company/departments/{dept_id}")
