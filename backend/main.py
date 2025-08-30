@@ -5,7 +5,8 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from backend.routes import auth_routes, CoAdmin_routes, department_routes, ai_routes
 
 # Middleware
-from middleware.cors import setup_cors
+from backend.middleware.cors import setup_cors
+
 
 app = FastAPI(title="EcoTrack Backend")
 

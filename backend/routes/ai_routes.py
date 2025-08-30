@@ -1,12 +1,12 @@
 #ai_service.py
 from fastapi import APIRouter, Depends, Request
-from services import ai_service, auth_service
+from backend.services import ai_service, auth_service
 from pydantic import BaseModel
 import sys
 sys.path.append("../../ecotrack-ai/backend")
-from ecotrack_ai.backend.anomaly_detection import AnomalyDetector
-from ecotrack_ai.backend.carbon_calculator import CarbonFootprintCalculator
-from ecotrack_ai.backend.forecasting_service import EnergyForecaster
+from backend.anomaly_detection import AnomalyDetector
+from backend.carbon_calculator import CarbonFootprintCalculator
+from backend.forecasting_service import EnergyForecaster
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 

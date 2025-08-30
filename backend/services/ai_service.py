@@ -1,5 +1,5 @@
 # services/ai_service.py
-from config.ai import call_inflection
+from backend.config.ai import call_inflection
 
 async def ask_ai(prompt: str) -> str:
     """

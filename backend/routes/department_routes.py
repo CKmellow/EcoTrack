@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from bson import ObjectId
-from models.department import Department
-from config.database import db
-from services import auth_service
+from backend.models.department import Department
+from backend.config.database import db
+from backend.services import auth_service
 
 router = APIRouter()
 

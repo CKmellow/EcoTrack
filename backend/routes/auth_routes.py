@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.user import UserSignup, UserLogin
-from services import auth_service
+from backend.models.user import UserSignup, UserLogin
+from backend.services import auth_service
 
 router = APIRouter()
 
@@ -20,6 +20,10 @@ async def signup(user: UserSignup):
 @router.post("/login")
 async def login(user: UserLogin):
     db_user = await auth_service.find_user_by_email(user.email)
+    # Debug prints to help diagnose login issues
+    print("DB user:", db_user)
+    print("Input password:", user.password)
+    print("Stored password:", db_user["password"] if db_user else None)
     if not db_user or not auth_service.verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 

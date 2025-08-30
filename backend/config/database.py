@@ -1,21 +1,16 @@
-import motor.motor_asyncio
 import os
 from dotenv import load_dotenv
+import motor.motor_asyncio
 
-# Load .env variables
-load_dotenv()
+# Load .env from backend folder
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
-# MongoDB connection string
 MONGO_URI = os.getenv("MONGO_URI")
-DB_NAME = os.getenv("DB_NAME", "Eco-Track")
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-# JWT settings
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
-
-# Create a Motor client
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
+db = client["Hustle-Base"]  # Use your actual DB name here
 
-# Access the database
-db = client[DB_NAME]
+# ...existing code...
