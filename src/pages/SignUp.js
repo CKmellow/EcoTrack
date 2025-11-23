@@ -52,37 +52,11 @@ export default function Signup() {
         return;
       }
 
-      // ✅ Signup successful → login immediately
-      const loginRes = await fetch("http://127.0.0.1:8000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, password: form.password }),
-      });
 
       setLoading(false);
-
-      if (!loginRes.ok) {
-        toast.error("Signup succeeded but login failed", { position: "top-right" });
-        return;
-      }
-
-      const data = await loginRes.json();
-      // Save token + role
-      localStorage.setItem("token", data.access_token);
-      localStorage.setItem("userEmail", form.email);
-      localStorage.setItem("role", data.role);
-
-      toast.success("🎉 Account created & logged in!", { position: "top-right" });
-
-      // ✅ Redirect by role
+      toast.success("🎉 Account created! Please login.", { position: "top-right" });
       setTimeout(() => {
-        if (data.role === "company_admin") {
-          navigate("/admin-dashboard");
-        } else if (data.role === "department_user") {
-          navigate("/department-dashboard");
-        } else {
-          navigate("/");
-        }
+        navigate("/login");
       }, 1500);
 
     } catch (err) {

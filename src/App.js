@@ -7,10 +7,9 @@ import DepartmentDashboard from './pages/DepartmentDashboard';
 
 
 import CompanyAdminDashboard from "./pages/CompanyAdminDashboard";
-import BillManagement from './pages/BillManagement';
+// ...existing code...
 
-// ...inside your <Routes> component:
-<Route path="/bills" element={<BillManagement />} />
+// ...existing code...
 function App() {
   return (
     <Routes>
@@ -18,7 +17,6 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin-dashboard" element={<CompanyAdminDashboard />} />
-      <Route path="/bills" element={<BillManagement />} />  
       <Route path="/department-dashboard" element={<DepartmentDashboard />} />
       
     </Routes>
