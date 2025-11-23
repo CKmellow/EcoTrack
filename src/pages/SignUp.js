@@ -34,7 +34,7 @@ export default function Signup() {
         email: form.email,
         phone: form.phone,
         password: form.password,
-        role: "company_admin", // signup always creates company admin
+        role: "department_admin", 
         department_id: "",
         is_active: true,
       };
