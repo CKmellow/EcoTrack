@@ -3,10 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import EcoTracker from "./pages/EcoTracker";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
-import DepartmentDashboard from './pages/DepartmentDashboard';
 
-
-import CompanyAdminDashboard from "./pages/CompanyAdminDashboard";
 // ...existing code...
 
 // ...existing code...
@@ -16,8 +13,6 @@ function App() {
       <Route path="/" element={<EcoTracker />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/admin-dashboard" element={<CompanyAdminDashboard />} />
-      <Route path="/department-dashboard" element={<DepartmentDashboard />} />
       
     </Routes>
   );

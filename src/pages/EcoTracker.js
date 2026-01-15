@@ -1,13 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { useNavigate } from "react-router-dom";
 import backgroundImg from "../assets/backgroundimg2.jpg";
-import PerformanceInsights from "../Components/PerformanceInsights";
-import EnergyTips from "../Components/EnergyTips";
-import StatCards from "../Components/StatCards";
-import Footer from "../Components/Footer";
+import PerformanceInsights from "../components/home/layout/ui/PerformanceInsights.jsx";
+import EnergyTips from "../components/home/layout/ui/EnergyTips.jsx";
+import StatCards from "../components/home/layout/ui/StatCards.jsx";
+import Footer from "../components/home/layout/ui/Footer.jsx";
 
 
 function EcoTracker() {
@@ -34,8 +34,8 @@ function EcoTracker() {
 
     {/* Nav */}
     <nav className="flex items-center space-x-6 text-gray-200 font-medium backdrop-blur-sm">
-      <a href="#dashboard" className="hover:text-[#144D52]">Dashboard</a>
-      <a href="#analytics" className="hover:text-[#144D52]">Analytics</a>
+      {/* <a href="#dashboard" className="hover:text-[#144D52]">Dashboard</a>
+      <a href="#analytics" className="hover:text-[#144D52]">Analytics</a> */}
       <button  onClick={() => navigate("/signup")} className="bg-black hover:bg-[#1e8c6b] text-white rounded px-5 py-2 font-medium">
         Get Started
       </button>
