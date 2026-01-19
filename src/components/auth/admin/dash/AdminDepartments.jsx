@@ -126,22 +126,23 @@ export default function AdminDepartments({ departments, loading }) {
               ))}
             </div>
           )}
-          {/* Device details block - outside device grid */}
-          <div>
-            {deviceDetailsLoading && (
-              <div className="text-gray-500 mt-4">Loading device details...</div>
-            )}
-            {!deviceDetailsLoading && deviceDetails && (
-              <div className="mt-4 p-4 border border-green-300 rounded bg-green-50">
-                <h4 className="font-bold text-green-800 mb-2">Device Details</h4>
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap">{JSON.stringify(deviceDetails, null, 2)}</pre>
+          {/* Device details modal */}
+          {deviceDetailsLoading && (
+            <div className="text-gray-500 mt-4">Loading device details...</div>
+          )}
+          {!deviceDetailsLoading && deviceDetails && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg relative">
                 <button
-                  className="mt-2 px-2 py-1 bg-gray-200 rounded text-xs hover:bg-gray-300"
                   onClick={() => { setSelectedDevice(null); setDeviceDetails(null); }}
-                >Close Details</button>
+                  className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl"
+                  aria-label="Close"
+                >×</button>
+                <h4 className="font-bold text-green-800 mb-4 text-lg">Device Details</h4>
+                <pre className="text-xs text-gray-700 whitespace-pre-wrap max-h-96 overflow-auto">{JSON.stringify(deviceDetails, null, 2)}</pre>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
