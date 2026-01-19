@@ -113,15 +113,18 @@ export default function AdminDepartments({ departments, loading }) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {filteredDevices.map(device => (
-                <div key={device._id} className="bg-white border border-green-200 rounded-lg p-4 shadow">
+                <div
+                  key={device._id}
+                  className="bg-white border border-green-200 rounded-lg p-4 shadow cursor-pointer hover:shadow-lg transition"
+                  onClick={() => setSelectedDevice(device)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View details for ${device.name}`}
+                >
                   <div className="font-semibold text-green-800">{device.name}</div>
                   <div className="text-xs text-gray-500">Type: {device.type}</div>
                   <div className="text-xs text-gray-400">Device ID: {device._id}</div>
                   <div className="text-xs text-gray-400">Dept ID: {device.department_id}</div>
-                  <button
-                    className="mt-2 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
-                    onClick={() => setSelectedDevice(device)}
-                  >View Details</button>
                 </div>
               ))}
             </div>
